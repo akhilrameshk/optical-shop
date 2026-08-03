@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import {
@@ -20,6 +20,8 @@ import {
   TextField,
   Snackbar,
   Alert,
+  Fab,
+  Tooltip,
 } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import VerifiedUserOutlinedIcon from '@mui/icons-material/VerifiedUserOutlined';
@@ -30,6 +32,12 @@ import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import MapIcon from '@mui/icons-material/Map';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import CallIcon from '@mui/icons-material/Call';
+
+const TARGET_PHONE_NUMBER = '916238704448';
 
 const FEATURED_FRAMES = [
   {
@@ -71,56 +79,83 @@ export default function Home() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [isAtTop, setIsAtTop] = useState(true);
   const [toast, setToast] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
     open: false,
     message: '',
     severity: 'success',
   });
 
+  // Track scroll position for Toggle Arrow (Up/Down)
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY < 300) {
+        setIsAtTop(true);
+      } else {
+        setIsAtTop(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleScrollToggle = () => {
+    if (isAtTop) {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth',
+      });
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  setLoading(true);
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-    // 1. Format the text message for WhatsApp
-    const whatsappMessage = `*New Contact Inquiry - Noor Optical*\n\n` +
-      `*Name:* ${formData.name}\n` +
-      `*Phone:* ${formData.phone}\n` +
-      `*Subject:* ${formData.subject || 'N/A'}\n` +
-      `*Message:* ${formData.message}`;
+    try {
+      // 1. Format WhatsApp message
+      const whatsappMessage =
+        `*New Contact Inquiry - Noor Optical*\n\n` +
+        `*Name:* ${formData.name}\n` +
+        `*Phone:* ${formData.phone}\n` +
+        `*Subject:* ${formData.subject || 'N/A'}\n` +
+        `*Message:* ${formData.message}`;
 
-    // 2. Updated target WhatsApp number
-    const targetPhoneNumber = '+916238704448'; 
+      // 2. Construct WhatsApp URL
+      const whatsappUrl = `https://wa.me/${TARGET_PHONE_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
 
-    // 3. Construct the WhatsApp URL
-    const whatsappUrl = `https://wa.me/${targetPhoneNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+      // 3. Open WhatsApp tab
+      window.open(whatsappUrl, '_blank');
 
-    // 4. Open WhatsApp in a new tab
-    window.open(whatsappUrl, '_blank');
+      setToast({
+        open: true,
+        message: 'Opening WhatsApp to send your message...',
+        severity: 'success',
+      });
 
-    setToast({
-      open: true,
-      message: 'Opening WhatsApp to send your message...',
-      severity: 'success',
-    });
-
-    // Clear Form
-    setFormData({ name: '', phone: '', subject: '', message: '' });
-  } catch (error) {
-    setToast({
-      open: true,
-      message: 'Failed to open WhatsApp. Please try again.',
-      severity: 'error',
-    });
-  } finally {
-    setLoading(false);
-  }
-};
+      // Clear Form
+      setFormData({ name: '', phone: '', subject: '', message: '' });
+    } catch (error) {
+      setToast({
+        open: true,
+        message: 'Failed to open WhatsApp. Please try again.',
+        severity: 'error',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'background.default' }}>
@@ -166,7 +201,27 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                     pt: 1,
                   }}
                 >
-                 
+                  <Button
+                    component={Link}
+                    href="/frames"
+                    variant="contained"
+                    color="secondary"
+                    size="large"
+                    endIcon={<ArrowForwardIcon />}
+                    sx={{ fontWeight: 700 }}
+                  >
+                    Explore Frames
+                  </Button>
+                  <Button
+                    component={Link}
+                    href="/book-eye-test"
+                    variant="outlined"
+                    color="inherit"
+                    size="large"
+                    sx={{ borderColor: 'grey.700' }}
+                  >
+                    Book Eye Exam
+                  </Button>
                 </Stack>
               </Stack>
             </Grid>
@@ -481,7 +536,7 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                     <Typography
                       variant="body2"
                       component="a"
-                      href="tel:+916238704448"
+                      href={`tel:+${TARGET_PHONE_NUMBER}`}
                       color="text.secondary"
                       sx={{ textDecoration: 'none', '&:hover': { color: 'primary.main' } }}
                     >
@@ -573,7 +628,7 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                       size="large"
                       sx={{ fontWeight: 700, px: 4 }}
                     >
-                      {loading ? 'Sending...' : 'Send Message'}
+                      {loading ? 'Sending...' : 'Send Message via WhatsApp'}
                     </Button>
                   </Grid>
                 </Grid>
@@ -615,12 +670,79 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         </Container>
       </Box>
 
+      {/* FLOATING ACTION BUTTONS (BOTTOM RIGHT) */}
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: 24,
+          right: 24,
+          zIndex: 1000,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1.5,
+          alignItems: 'center',
+        }}
+      >
+        {/* Toggle Arrow (Scroll Top / Scroll Bottom) */}
+        <Tooltip title={isAtTop ? 'Scroll to Bottom' : 'Scroll to Top'} placement="left">
+          <Fab
+            size="small"
+            color="default"
+            onClick={handleScrollToggle}
+            aria-label="Scroll Toggle"
+            sx={{
+              bgcolor: 'background.paper',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+              '&:hover': { bgcolor: 'grey.200' },
+            }}
+          >
+            {isAtTop ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />}
+          </Fab>
+        </Tooltip>
+
+        {/* WhatsApp Icon */}
+        <Tooltip title="Chat on WhatsApp" placement="left">
+          <Fab
+            component="a"
+            href={`https://wa.me/${TARGET_PHONE_NUMBER}?text=${encodeURIComponent(
+              'Hi Noor Optical, I would like to inquire about your eyewear and services.'
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="WhatsApp"
+            sx={{
+              bgcolor: '#25D366',
+              color: '#ffffff',
+              boxShadow: '0 4px 12px rgba(37,211,102,0.4)',
+              '&:hover': { bgcolor: '#1DA851' },
+            }}
+          >
+            <WhatsAppIcon />
+          </Fab>
+        </Tooltip>
+
+        {/* Call Icon */}
+        <Tooltip title="Call Us Now" placement="left">
+          <Fab
+            component="a"
+            href={`tel:+${TARGET_PHONE_NUMBER}`}
+            color="primary"
+            aria-label="Call"
+            sx={{
+              boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+            }}
+          >
+            <CallIcon />
+          </Fab>
+        </Tooltip>
+      </Box>
+
       {/* User Notification Toast */}
       <Snackbar
         open={toast.open}
         autoHideDuration={6000}
         onClose={() => setToast((prev) => ({ ...prev, open: false }))}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >
         <Alert
           onClose={() => setToast((prev) => ({ ...prev, open: false }))}
