@@ -42,7 +42,6 @@ export default function Navbar() {
         sx={{
           borderBottom: '1px solid',
           borderColor: 'rgba(212, 175, 55, 0.2)',
-          bgcolor: 'rgba(255, 255, 255, 0.88)',
           backdropFilter: 'blur(16px)',
           transition: 'all 0.3s ease',
         }}
