@@ -196,7 +196,7 @@ export default function Navbar() {
                   },
                 }}
               >
-                Find Showroom
+                Find Us
               </Button>
             </Stack>
           </Toolbar>
