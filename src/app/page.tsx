@@ -230,35 +230,7 @@ export default function Home() {
                   <Typography variant="body1" sx={{ color: 'grey.300', fontSize: '1.125rem', maxWidth: 500 }}>
                     Welcome to <strong>Noor Optical</strong>. Experience custom Italian acetate frames paired with high-index German prescription lenses.
                   </Typography>
-                  <Stack
-                    sx={{
-                      flexDirection: { xs: 'column', sm: 'row' },
-                      gap: 2,
-                      pt: 1,
-                    }}
-                  >
-                    <Button
-                      component={Link}
-                      href="/frames"
-                      variant="contained"
-                      color="secondary"
-                      size="large"
-                      endIcon={<ArrowForwardIcon />}
-                      sx={{ fontWeight: 700, color: '#0F172A' }}
-                    >
-                      Explore Frames
-                    </Button>
-                    <Button
-                      component={Link}
-                      href="/book-eye-test"
-                      variant="outlined"
-                      color="inherit"
-                      size="large"
-                      sx={{ borderColor: 'grey.700' }}
-                    >
-                      Book Eye Exam
-                    </Button>
-                  </Stack>
+                 
                 </Stack>
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
