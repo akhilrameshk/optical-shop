@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import {
   Box,
@@ -41,6 +40,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CallIcon from '@mui/icons-material/Call';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const TARGET_PHONE_NUMBER = '916238704448';
 
@@ -75,10 +75,8 @@ const FEATURED_FRAMES = [
 ];
 
 export default function Home() {
-  // Theme Mode State ('light' | 'dark')
   const [mode, setMode] = useState<'light' | 'dark'>('light');
 
-  // Form State Management
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -94,7 +92,6 @@ export default function Home() {
     severity: 'success',
   });
 
-  // Dynamic Material UI Theme Configuration
   const theme = useMemo(
     () =>
       createTheme({
@@ -108,9 +105,12 @@ export default function Home() {
             dark: '#0284C7',
           },
           background: {
-            default: mode === 'light' ? '#FAFAFA' : '#0F172A',
+            default: mode === 'light' ? '#F8FAFC' : '#0B1120',
             paper: mode === 'light' ? '#FFFFFF' : '#1E293B',
           },
+        },
+        typography: {
+          fontFamily: 'inherit',
         },
       }),
     [mode]
@@ -120,7 +120,6 @@ export default function Home() {
     setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
   };
 
-  // Track scroll position for Toggle Arrow (Up/Down)
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY < 300) {
@@ -158,7 +157,6 @@ export default function Home() {
     setLoading(true);
 
     try {
-      // 1. Format WhatsApp message
       const whatsappMessage =
         `*New Contact Inquiry - Noor Optical*\n\n` +
         `*Name:* ${formData.name}\n` +
@@ -166,10 +164,7 @@ export default function Home() {
         `*Subject:* ${formData.subject || 'N/A'}\n` +
         `*Message:* ${formData.message}`;
 
-      // 2. Construct WhatsApp URL
       const whatsappUrl = `https://wa.me/${TARGET_PHONE_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
-
-      // 3. Open WhatsApp tab
       window.open(whatsappUrl, '_blank');
 
       setToast({
@@ -178,7 +173,6 @@ export default function Home() {
         severity: 'success',
       });
 
-      // Clear Form
       setFormData({ name: '', phone: '', subject: '', message: '' });
     } catch {
       setToast({
@@ -200,7 +194,10 @@ export default function Home() {
         {/* Hero Banner */}
         <Box
           sx={{
-            bgcolor: mode === 'light' ? 'primary.main' : '#0B1120',
+            background:
+              mode === 'light'
+                ? 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)'
+                : 'linear-gradient(135deg, #090D16 0%, #111827 100%)',
             color: 'common.white',
             py: { xs: 8, md: 12 },
             position: 'relative',
@@ -212,17 +209,18 @@ export default function Home() {
               <Grid size={{ xs: 12, md: 6 }}>
                 <Stack spacing={3}>
                   <Chip
-                    icon={<AutoAwesomeIcon sx={{ color: 'primary.main !important' }} />}
+                    icon={<AutoAwesomeIcon sx={{ color: '#0F172A !important' }} />}
                     label="Premium Vision & Eyewear"
                     color="secondary"
                     size="small"
-                    sx={{ width: 'fit-content', fontWeight: 700, px: 1 }}
+                    sx={{ width: 'fit-content', fontWeight: 800, px: 1, color: '#0F172A' }}
                   />
                   <Typography
                     variant="h1"
                     sx={{
                       fontSize: { xs: '2.5rem', sm: '3.25rem', md: '3.75rem' },
                       lineHeight: 1.1,
+                      fontWeight: 900,
                     }}
                   >
                     See the World with Perfect Clarity.
@@ -230,17 +228,50 @@ export default function Home() {
                   <Typography variant="body1" sx={{ color: 'grey.300', fontSize: '1.125rem', maxWidth: 500 }}>
                     Welcome to <strong>Noor Optical</strong>. Experience custom Italian acetate frames paired with high-index German prescription lenses.
                   </Typography>
-                 
+                  <Stack
+                    sx={{
+                      flexDirection: { xs: 'column', sm: 'row' },
+                      gap: 2,
+                      pt: 1,
+                    }}
+                  >
+                    <Button
+                      component="a"
+                      href="#collections"
+                      variant="contained"
+                      color="secondary"
+                      size="large"
+                      endIcon={<ArrowForwardIcon />}
+                      sx={{ fontWeight: 800, color: '#0F172A', borderRadius: 3, px: 3, py: 1.5 }}
+                    >
+                      Explore Frames
+                    </Button>
+                    <Button
+                      component="a"
+                      href="#contact"
+                      variant="outlined"
+                      color="inherit"
+                      size="large"
+                      startIcon={<CalendarMonthIcon />}
+                      sx={{ borderColor: 'grey.700', borderRadius: 3, px: 3, py: 1.5, fontWeight: 700 }}
+                    >
+                      Book Eye Exam
+                    </Button>
+                  </Stack>
                 </Stack>
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <Box sx={{ position: 'relative' }}>
                   <Card
                     sx={{
-                      borderRadius: 5,
+                      borderRadius: 6,
                       overflow: 'hidden',
-                      boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
-                      transform: { md: 'perspective(1000px) rotateY(-5deg)' },
+                      boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
+                      transform: { md: 'perspective(1000px) rotateY(-4deg)' },
+                      transition: 'transform 0.4s ease',
+                      '&:hover': {
+                        transform: { md: 'perspective(1000px) rotateY(0deg)' },
+                      },
                     }}
                   >
                     <CardMedia
@@ -256,17 +287,17 @@ export default function Home() {
           </Container>
         </Box>
 
-        {/* Trust & Guarantees Bar */}
+        {/* Trust Bar */}
         <Container maxWidth="lg" sx={{ mt: -5, mb: 8, position: 'relative', zIndex: 2 }}>
-          <Paper elevation={4} sx={{ p: { xs: 3, md: 4 }, borderRadius: 4, bgcolor: 'background.paper' }}>
+          <Paper elevation={4} sx={{ p: { xs: 3, md: 4 }, borderRadius: 5, bgcolor: 'background.paper' }}>
             <Grid container spacing={3}>
               <Grid size={{ xs: 12, sm: 4 }}>
-                <Stack direction="row" spacing={2}>
+                <Stack  spacing={2} sx={{ alignItems: "center" }}>
                   <Avatar sx={{ bgcolor: 'secondary.main', color: '#0F172A', width: 52, height: 52 }}>
                     <VerifiedUserOutlinedIcon />
                   </Avatar>
                   <Box>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
                       Licensed Opticians
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
@@ -276,12 +307,12 @@ export default function Home() {
                 </Stack>
               </Grid>
               <Grid size={{ xs: 12, sm: 4 }}>
-                <Stack direction="row" spacing={2}>
+                <Stack spacing={2} sx={{ alignItems: "center" }}>
                   <Avatar sx={{ bgcolor: 'secondary.main', color: '#0F172A', width: 52, height: 52 }}>
                     <RemoveRedEyeOutlinedIcon />
                   </Avatar>
                   <Box>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
                       Free Anti-Glare Coating
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
@@ -291,12 +322,12 @@ export default function Home() {
                 </Stack>
               </Grid>
               <Grid size={{ xs: 12, sm: 4 }}>
-                <Stack direction="row" spacing={2}>
+                <Stack spacing={2} sx={{ alignItems: "center" }}>
                   <Avatar sx={{ bgcolor: 'secondary.main', color: '#0F172A', width: 52, height: 52 }}>
                     <LocalShippingOutlinedIcon />
                   </Avatar>
                   <Box>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
                       Fast Delivery & Fitting
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
@@ -309,7 +340,7 @@ export default function Home() {
           </Paper>
         </Container>
 
-        {/* Featured Collection Section */}
+        {/* Featured Collection */}
         <Box id="collections" sx={{ scrollMarginTop: '90px' }}>
           <Container maxWidth="lg" sx={{ py: 4, mb: 8 }}>
             <Stack
@@ -322,15 +353,15 @@ export default function Home() {
               }}
             >
               <Box>
-                <Typography variant="caption" color="secondary.dark" sx={{ textTransform: 'uppercase', letterSpacing: 1, fontWeight: 700 }}>
+                <Typography variant="caption" color="secondary.dark" sx={{ textTransform: 'uppercase', letterSpacing: 1.5, fontWeight: 800 }}>
                   Handpicked Collections
                 </Typography>
-                <Typography variant="h3" sx={{ fontWeight: 800, mt: 1 }}>
+                <Typography variant="h3" sx={{ fontWeight: 900, mt: 0.5 }}>
                   Featured Eyewear
                 </Typography>
               </Box>
-              <Button component={Link} href="/frames" color="secondary" sx={{ fontWeight: 700 }}>
-                View All Collection →
+              <Button component="a" href="#contact" color="secondary" sx={{ fontWeight: 800, fontSize: '1rem' }}>
+                Inquire Special Order →
               </Button>
             </Stack>
 
@@ -342,10 +373,11 @@ export default function Home() {
                       height: '100%',
                       display: 'flex',
                       flexDirection: 'column',
-                      transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+                      borderRadius: 4,
+                      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                       '&:hover': {
                         transform: 'translateY(-8px)',
-                        boxShadow: '0 12px 24px rgba(0,0,0,0.2)',
+                        boxShadow: mode === 'light' ? '0 16px 32px rgba(0,0,0,0.1)' : '0 16px 32px rgba(0,0,0,0.4)',
                       },
                     }}
                   >
@@ -355,24 +387,24 @@ export default function Home() {
                         label={frame.tag}
                         size="small"
                         color="secondary"
-                        sx={{ position: 'absolute', top: 16, left: 16, fontWeight: 700, color: '#0F172A' }}
+                        sx={{ position: 'absolute', top: 16, left: 16, fontWeight: 800, color: '#0F172A' }}
                       />
                     </Box>
                     <CardContent sx={{ flexGrow: 1, p: 3 }}>
-                      <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-                        <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase' }}>
+                      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'uppercase', fontWeight: 700 }}>
                           {frame.category}
                         </Typography>
                         <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
                           <Rating value={frame.rating} precision={0.1} size="small" readOnly />
-                          <Typography variant="caption">{frame.rating}</Typography>
+                          <Typography variant="caption" sx={{ fontWeight: 700 }}>{frame.rating}</Typography>
                         </Stack>
                       </Stack>
-                      <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mt: 1 }}>
+                      <Typography variant="h6" gutterBottom sx={{ fontWeight: 800, mt: 1 }}>
                         {frame.name}
                       </Typography>
                       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
-                        <Typography variant="h6" sx={{ fontWeight: 700, color: 'secondary.main' }}>
+                        <Typography variant="h6" sx={{ fontWeight: 900, color: 'secondary.main' }}>
                           ${frame.price}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
@@ -388,7 +420,7 @@ export default function Home() {
         </Box>
 
         {/* Craftsmanship Section */}
-        <Box id="craftsmanship" sx={{ scrollMarginTop: '90px', bgcolor: mode === 'light' ? 'grey.50' : '#111827', py: 10, mb: 8 }}>
+        <Box id="craftsmanship" sx={{ scrollMarginTop: '90px', bgcolor: mode === 'light' ? 'grey.100' : '#111827', py: 10, mb: 8 }}>
           <Container maxWidth="lg">
             <Grid container spacing={6} sx={{ alignItems: 'center' }}>
               <Grid size={{ xs: 12, md: 6 }}>
@@ -400,29 +432,29 @@ export default function Home() {
                     width: '100%',
                     height: 400,
                     objectFit: 'cover',
-                    borderRadius: 4,
-                    boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+                    borderRadius: 5,
+                    boxShadow: '0 12px 30px rgba(0,0,0,0.2)',
                   }}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="caption" color="secondary.dark" sx={{ textTransform: 'uppercase', letterSpacing: 1, fontWeight: 700 }}>
+                <Typography variant="caption" color="secondary.dark" sx={{ textTransform: 'uppercase', letterSpacing: 1.5, fontWeight: 800 }}>
                   Uncompromising Quality
                 </Typography>
-                <Typography variant="h3" sx={{ fontWeight: 800, mt: 1, mb: 3 }}>
+                <Typography variant="h3" sx={{ fontWeight: 900, mt: 0.5, mb: 3 }}>
                   Precision Engineering Meets Artistry
                 </Typography>
-                <Typography variant="body1" color="text.secondary" sx={{ mb: 3, lineHeight: 1.7 }}>
+                <Typography variant="body1" color="text.secondary" sx={{ mb: 3, lineHeight: 1.75 }}>
                   Our eyewear combines Japanese aerospace-grade titanium with hand-polished Italian Mazzucchelli acetate. Each frame undergoes 48 distinct production stages to ensure unmatched durability, ultra-lightweight comfort, and flawless finish.
                 </Typography>
-                <Grid container spacing={2}>
+                <Grid container spacing={3}>
                   <Grid size={{ xs: 6 }}>
-                    <Typography variant="h5" color="secondary.main" sx={{ fontWeight: 800 }}>100%</Typography>
-                    <Typography variant="body2" color="text.secondary">Hypoallergenic Materials</Typography>
+                    <Typography variant="h4" color="secondary.main" sx={{ fontWeight: 900 }}>100%</Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>Hypoallergenic Materials</Typography>
                   </Grid>
                   <Grid size={{ xs: 6 }}>
-                    <Typography variant="h5" color="secondary.main" sx={{ fontWeight: 800 }}>0.1mm</Typography>
-                    <Typography variant="body2" color="text.secondary">Lens Surface Precision</Typography>
+                    <Typography variant="h4" color="secondary.main" sx={{ fontWeight: 900 }}>0.1mm</Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>Lens Surface Precision</Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -435,28 +467,28 @@ export default function Home() {
           <Container maxWidth="lg">
             <Grid container spacing={6} sx={{ alignItems: 'center' }}>
               <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="caption" color="secondary.dark" sx={{ textTransform: 'uppercase', letterSpacing: 1, fontWeight: 700 }}>
+                <Typography variant="caption" color="secondary.dark" sx={{ textTransform: 'uppercase', letterSpacing: 1.5, fontWeight: 800 }}>
                   Our Story
                 </Typography>
-                <Typography variant="h3" sx={{ fontWeight: 800, mt: 1, mb: 3 }}>
+                <Typography variant="h3" sx={{ fontWeight: 900, mt: 0.5, mb: 3 }}>
                   Dedicated to Elevating Your Vision
                 </Typography>
-                <Typography variant="body1" color="text.secondary" sx={{ mb: 2, lineHeight: 1.7 }}>
+                <Typography variant="body1" color="text.secondary" sx={{ mb: 2, lineHeight: 1.75 }}>
                   Founded with a mission to bridge high fashion and medical precision, Noor Optical provides boutique eyewear crafted without luxury markup.
                 </Typography>
-                <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.75 }}>
                   Our team of certified optometrists and styling specialists are dedicated to helping you discover frames that reflect your personal style while giving you crystal-clear vision.
                 </Typography>
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <Paper elevation={0} sx={{ p: 4, bgcolor: mode === 'light' ? '#0F172A' : '#1E293B', color: 'common.white', borderRadius: 4 }}>
-                  <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
+                <Paper elevation={0} sx={{ p: 4, bgcolor: mode === 'light' ? '#0F172A' : '#1E293B', color: 'common.white', borderRadius: 5 }}>
+                  <Typography variant="h5" sx={{ fontWeight: 800, mb: 2 }}>
                     The Noor Guarantee
                   </Typography>
-                  <Typography variant="body2" sx={{ color: 'grey.300', mb: 3, lineHeight: 1.6 }}>
+                  <Typography variant="body2" sx={{ color: 'grey.300', mb: 3, lineHeight: 1.65 }}>
                     We stand by every prescription lens and frame. Enjoy a 30-day scratch warranty, lifetime frame adjustments at no charge, and complimentary lens replacement if your prescription changes within 60 days.
                   </Typography>
-                  <Button component={Link} href="/book-eye-test" variant="contained" color="secondary" sx={{ fontWeight: 700, color: '#0F172A' }}>
+                  <Button component="a" href="#contact" variant="contained" color="secondary" sx={{ fontWeight: 800, color: '#0F172A', borderRadius: 3 }}>
                     Schedule Your Consultation
                   </Button>
                 </Paper>
@@ -465,12 +497,12 @@ export default function Home() {
           </Container>
         </Box>
 
-        {/* Eye Exam Callout Banner */}
-        <Box sx={{ bgcolor: mode === 'light' ? '#0F172A' : '#0B1120', color: 'common.white', py: 10 }}>
+        {/* Eye Exam Callout */}
+        <Box sx={{ bgcolor: mode === 'light' ? '#0F172A' : '#090D16', color: 'common.white', py: 10 }}>
           <Container maxWidth="lg">
             <Grid container spacing={4} sx={{ alignItems: 'center' }}>
               <Grid size={{ xs: 12, md: 8 }}>
-                <Typography variant="h3" sx={{ fontWeight: 800, mb: 2 }}>
+                <Typography variant="h3" sx={{ fontWeight: 900, mb: 2 }}>
                   Need a New Prescription?
                 </Typography>
                 <Typography variant="body1" color="grey.300" sx={{ maxWidth: 600 }}>
@@ -479,12 +511,12 @@ export default function Home() {
               </Grid>
               <Grid size={{ xs: 12, md: 4 }} sx={{ textAlign: { xs: 'left', md: 'right' } }}>
                 <Button
-                  component={Link}
-                  href="/book-eye-test"
+                  component="a"
+                  href="#contact"
                   variant="contained"
                   color="secondary"
                   size="large"
-                  sx={{ fontWeight: 800, px: 4, py: 1.5, color: '#0F172A' }}
+                  sx={{ fontWeight: 800, px: 4, py: 1.5, color: '#0F172A', borderRadius: 3 }}
                 >
                   Schedule Appointment
                 </Button>
@@ -496,21 +528,21 @@ export default function Home() {
         {/* Contact Section */}
         <Box id="contact" sx={{ scrollMarginTop: '90px', py: 10, bgcolor: 'background.paper' }}>
           <Container maxWidth="lg">
-            <Typography variant="caption" color="secondary.dark" sx={{ textTransform: 'uppercase', letterSpacing: 1, fontWeight: 700, display: 'block', textAlign: 'center' }}>
+            <Typography variant="caption" color="secondary.dark" sx={{ textTransform: 'uppercase', letterSpacing: 1.5, fontWeight: 800, display: 'block', textAlign: 'center' }}>
               Get In Touch
             </Typography>
-            <Typography variant="h3" sx={{ fontWeight: 800, mt: 1, mb: 6, textAlign: 'center' }}>
+            <Typography variant="h3" sx={{ fontWeight: 900, mt: 0.5, mb: 6, textAlign: 'center' }}>
               Contact Us
             </Typography>
             <Grid container spacing={6}>
               <Grid size={{ xs: 12, md: 5 }}>
                 <Stack spacing={4}>
-                  <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
-                    <Avatar sx={{ bgcolor: 'secondary.main', color: '#0F172A' }}>
+                  <Stack direction="row" spacing={2.5} sx={{ alignItems: 'flex-start' }}>
+                    <Avatar sx={{ bgcolor: 'secondary.main', color: '#0F172A', width: 48, height: 48 }}>
                       <LocationOnIcon />
                     </Avatar>
                     <Box>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
                         Noor Optical
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
@@ -526,19 +558,19 @@ export default function Home() {
                         rel="noopener noreferrer"
                         size="small"
                         startIcon={<MapIcon />}
-                        sx={{ mt: 1, fontWeight: 700, p: 0, justifyContent: 'flex-start' }}
+                        sx={{ mt: 1, fontWeight: 800, p: 0, justifyContent: 'flex-start' }}
                       >
                         Get Directions
                       </Button>
                     </Box>
                   </Stack>
 
-                  <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
-                    <Avatar sx={{ bgcolor: 'secondary.main', color: '#0F172A' }}>
+                  <Stack direction="row" spacing={2.5} sx={{ alignItems: 'flex-start' }}>
+                    <Avatar sx={{ bgcolor: 'secondary.main', color: '#0F172A', width: 48, height: 48 }}>
                       <PhoneInTalkIcon />
                     </Avatar>
                     <Box>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
                         Call Us
                       </Typography>
                       <Typography
@@ -546,19 +578,19 @@ export default function Home() {
                         component="a"
                         href={`tel:+${TARGET_PHONE_NUMBER}`}
                         color="text.secondary"
-                        sx={{ textDecoration: 'none', '&:hover': { color: 'secondary.main' } }}
+                        sx={{ textDecoration: 'none', fontWeight: 600, '&:hover': { color: 'secondary.main' } }}
                       >
                         +91 6238704448
                       </Typography>
                     </Box>
                   </Stack>
 
-                  <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
-                    <Avatar sx={{ bgcolor: 'secondary.main', color: '#0F172A' }}>
+                  <Stack direction="row" spacing={2.5} sx={{ alignItems: 'flex-start' }}>
+                    <Avatar sx={{ bgcolor: 'secondary.main', color: '#0F172A', width: 48, height: 48 }}>
                       <AccessTimeIcon />
                     </Avatar>
                     <Box>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
                         Opening Hours
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
@@ -573,8 +605,8 @@ export default function Home() {
               </Grid>
 
               <Grid size={{ xs: 12, md: 7 }}>
-                <Paper elevation={2} component="form" onSubmit={handleFormSubmit} sx={{ p: 4, borderRadius: 3 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 700, mb: 3 }}>
+                <Paper elevation={3} component="form" onSubmit={handleFormSubmit} sx={{ p: 4, borderRadius: 4 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 800, mb: 3 }}>
                     Send a Message
                   </Typography>
                   <Grid container spacing={2}>
@@ -634,7 +666,7 @@ export default function Home() {
                         variant="contained"
                         color="secondary"
                         size="large"
-                        sx={{ fontWeight: 700, px: 4, color: '#0F172A' }}
+                        sx={{ fontWeight: 800, px: 4, color: '#0F172A', borderRadius: 3 }}
                       >
                         {loading ? 'Sending...' : 'Send Message via WhatsApp'}
                       </Button>
@@ -649,16 +681,16 @@ export default function Home() {
         {/* Dedicated Map Section */}
         <Box id="location" sx={{ bgcolor: mode === 'light' ? 'grey.100' : '#111827', pb: 10, pt: 4 }}>
           <Container maxWidth="lg">
-            <Typography variant="caption" color="secondary.dark" sx={{ textTransform: 'uppercase', letterSpacing: 1, fontWeight: 700, display: 'block', textAlign: 'center' }}>
+            <Typography variant="caption" color="secondary.dark" sx={{ textTransform: 'uppercase', letterSpacing: 1.5, fontWeight: 800, display: 'block', textAlign: 'center' }}>
               Find Our Store
             </Typography>
-            <Typography variant="h4" sx={{ fontWeight: 800, mt: 1, mb: 4, textAlign: 'center' }}>
+            <Typography variant="h4" sx={{ fontWeight: 900, mt: 0.5, mb: 4, textAlign: 'center' }}>
               Interactive Store Location
             </Typography>
             <Paper
-              elevation={3}
+              elevation={4}
               sx={{
-                borderRadius: 4,
+                borderRadius: 5,
                 overflow: 'hidden',
                 height: { xs: 350, md: 450 },
                 width: '100%',
@@ -678,9 +710,7 @@ export default function Home() {
           </Container>
         </Box>
 
-        {/* LEFT FLOATING THEME TOGGLE BUTTON */}
-       
-        {/* RIGHT FLOATING ACTION BUTTONS */}
+        {/* RIGHT FLOATING ACTION STACK */}
         <Box
           sx={{
             position: 'fixed',
@@ -693,16 +723,18 @@ export default function Home() {
             alignItems: 'center',
           }}
         >
-          <Tooltip title={mode === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'} placement="right">
+          {/* 1. Theme Switcher */}
+          <Tooltip title={mode === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'} placement="left">
             <Fab
+            size="small"
               onClick={toggleTheme}
               aria-label="Theme Switcher"
               sx={{
-                bgcolor: mode === 'light' ? '#1E293B' : '#F8FAFC',
+                bgcolor: mode === 'light' ? '#0F172A' : '#F8FAFC',
                 color: mode === 'light' ? '#F8FAFC' : '#0F172A',
                 boxShadow: '0 4px 14px rgba(0,0,0,0.3)',
                 '&:hover': {
-                  bgcolor: mode === 'light' ? '#334155' : '#E2E8F0',
+                  bgcolor: mode === 'light' ? '#1E293B' : '#E2E8F0',
                 },
               }}
             >
@@ -710,9 +742,27 @@ export default function Home() {
             </Fab>
           </Tooltip>
 
-          {/* WhatsApp Icon */}
+          {/* 2. Scroll Toggle Arrow */}
+          <Tooltip title={isAtTop ? 'Scroll to Bottom' : 'Scroll to Top'} placement="left">
+            <Fab
+              size="small"
+              onClick={handleScrollToggle}
+              aria-label="Scroll Toggle"
+              sx={{
+               bgcolor: mode === 'light' ? '#0F172A' : '#F8FAFC',
+                color: mode === 'light' ? '#F8FAFC' : '#0F172A',
+                boxShadow: '0 4px 14px rgba(0,0,0,0.25)',
+                '&:hover': {  bgcolor: mode === 'light' ? '#1E293B' : '#E2E8F0', },
+              }}
+            >
+              {isAtTop ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />}
+            </Fab>
+          </Tooltip>
+
+          {/* 3. WhatsApp Button */}
           <Tooltip title="Chat on WhatsApp" placement="left">
             <Fab
+            size="small"
               component="a"
               href={`https://wa.me/${TARGET_PHONE_NUMBER}?text=${encodeURIComponent(
                 'Hi Noor Optical, I would like to inquire about your eyewear and services.'
@@ -723,7 +773,7 @@ export default function Home() {
               sx={{
                 bgcolor: '#25D366',
                 color: '#ffffff',
-                boxShadow: '0 4px 12px rgba(37,211,102,0.4)',
+                boxShadow: '0 4px 14px rgba(37,211,102,0.45)',
                 '&:hover': { bgcolor: '#1DA851' },
               }}
             >
@@ -731,37 +781,22 @@ export default function Home() {
             </Fab>
           </Tooltip>
 
-          {/* Call Icon */}
+          {/* 4. Call Button */}
           <Tooltip title="Call Us Now" placement="left">
             <Fab
+            size="small"
               component="a"
               href={`tel:+${TARGET_PHONE_NUMBER}`}
               color="secondary"
               aria-label="Call"
               sx={{
-                boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+                boxShadow: '0 4px 14px rgba(56,189,248,0.45)',
                 color: '#0F172A',
               }}
             >
               <CallIcon />
             </Fab>
           </Tooltip>
-
-            {/* Toggle Arrow (Scroll Top / Scroll Bottom)
-          <Tooltip title={isAtTop ? 'Scroll to Bottom' : 'Scroll to Top'} placement="left">
-            <Fab
-              onClick={handleScrollToggle}
-              aria-label="Scroll Toggle"
-              sx={{
-               bgcolor: '#04032cff',
-                color: '#ffffff',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                '&:hover': { bgcolor: mode === 'light' ? 'grey.200' : 'grey.800' },
-              }}
-            >
-              {isAtTop ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />}
-            </Fab>
-          </Tooltip> */}
         </Box>
 
         {/* User Notification Toast */}

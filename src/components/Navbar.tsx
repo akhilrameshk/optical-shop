@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   AppBar,
@@ -16,15 +16,28 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Chip,
+  Divider,
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Monitor scroll distance to apply dynamic elevation shadow
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const navLinks = [
     { label: 'Collections', href: '#collections' },
@@ -40,14 +53,24 @@ export default function Navbar() {
         color="inherit"
         elevation={0}
         sx={{
-          borderBottom: '1px solid',
-          borderColor: 'rgba(212, 175, 55, 0.2)',
+          bgcolor: (theme) =>
+            theme.palette.mode === 'light'
+              ? 'rgba(255, 255, 255, 0.85)'
+              : 'rgba(15, 23, 42, 0.85)',
           backdropFilter: 'blur(16px)',
-          transition: 'all 0.3s ease',
+          borderBottom: '1px solid',
+          borderColor: (theme) =>
+            theme.palette.mode === 'light'
+              ? 'rgba(0, 0, 0, 0.08)'
+              : 'rgba(255, 255, 255, 0.08)',
+          boxShadow: scrolled
+            ? '0 10px 30px -10px rgba(0, 0, 0, 0.12)'
+            : 'none',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
       >
         <Container maxWidth="lg">
-          <Toolbar disableGutters sx={{ justifyContent: 'space-between', height: 80 }}>
+          <Toolbar disableGutters sx={{ justifyContent: 'space-between', height: { xs: 70, md: 80 } }}>
             {/* Mobile Menu Toggle Button */}
             <IconButton
               color="inherit"
@@ -56,9 +79,12 @@ export default function Navbar() {
               onClick={() => setMobileOpen(true)}
               sx={{
                 display: { md: 'none' },
-                bgcolor: 'action.hover',
-                borderRadius: 2,
-                p: 1,
+                bgcolor: (theme) =>
+                  theme.palette.mode === 'light' ? 'grey.100' : 'grey.800',
+                borderRadius: 2.5,
+                p: 1.25,
+                transition: 'transform 0.2s ease',
+                '&:active': { transform: 'scale(0.92)' },
               }}
             >
               <MenuIcon />
@@ -75,21 +101,21 @@ export default function Navbar() {
                 textDecoration: 'none',
                 color: 'inherit',
                 '&:hover .logo-icon': {
-                  transform: 'rotate(-10deg) scale(1.05)',
+                  transform: 'rotate(-10deg) scale(1.08)',
                 },
               }}
             >
               <Box
                 className="logo-icon"
                 sx={{
-                  bgcolor: 'primary.main',
+                  background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
                   color: 'secondary.main',
                   p: 1.25,
                   borderRadius: 3,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: '0 4px 14px rgba(10, 25, 47, 0.2)',
+                  boxShadow: '0 4px 14px rgba(15, 23, 42, 0.25)',
                   transition: 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                 }}
               >
@@ -99,18 +125,21 @@ export default function Navbar() {
                 variant="h6"
                 component="div"
                 sx={{
-                  fontWeight: 800,
+                  fontWeight: 900,
                   letterSpacing: -0.5,
-                  fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                  fontSize: { xs: '1.15rem', sm: '1.3rem' },
+                  display: 'flex',
+                  alignItems: 'center',
                 }}
               >
                 NOOR
                 <Box
                   component="span"
                   sx={{
-                    fontWeight: 300,
+                    fontWeight: 400,
                     color: 'secondary.main',
-                    ml: 0.5,
+                    ml: 0.6,
+                    letterSpacing: 1,
                   }}
                 >
                   OPTICAL
@@ -134,17 +163,20 @@ export default function Navbar() {
                   href={link.href}
                   color="inherit"
                   sx={{
-                    color: 'text.primary',
                     fontWeight: 600,
                     fontSize: '0.95rem',
                     px: 2.5,
                     py: 1,
-                    borderRadius: 2,
+                    borderRadius: 2.5,
                     position: 'relative',
-                    transition: 'all 0.2s ease',
+                    transition: 'all 0.25s ease',
                     '&:hover': {
-                      color: 'primary.main',
-                      bgcolor: 'rgba(212, 175, 55, 0.08)',
+                      color: 'secondary.main',
+                      bgcolor: (theme) =>
+                        theme.palette.mode === 'light'
+                          ? 'rgba(56, 189, 248, 0.08)'
+                          : 'rgba(56, 189, 248, 0.15)',
+                      transform: 'translateY(-1px)',
                     },
                     '&::after': {
                       content: '""',
@@ -156,7 +188,7 @@ export default function Navbar() {
                       height: '2px',
                       bgcolor: 'secondary.main',
                       borderRadius: 1,
-                      transition: 'transform 0.2s ease',
+                      transition: 'transform 0.25s ease',
                     },
                     '&:hover::after': {
                       transform: 'translateX(-50%) scaleX(1)',
@@ -169,13 +201,7 @@ export default function Navbar() {
             </Stack>
 
             {/* Store Location CTA */}
-            <Stack
-              sx={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 1.5,
-              }}
-            >
+            <Stack direction="row"  spacing={1.5}>
               <Button
                 component={Link}
                 href="#location"
@@ -184,14 +210,16 @@ export default function Navbar() {
                 size="medium"
                 startIcon={<LocationOnIcon />}
                 sx={{
-                  fontWeight: 700,
+                  fontWeight: 800,
                   px: { xs: 2, sm: 3 },
                   py: 1.2,
                   borderRadius: 3,
-                  boxShadow: '0 4px 14px rgba(212, 175, 55, 0.35)',
+                  color: '#0F172A',
+                  boxShadow: '0 4px 14px rgba(56, 189, 248, 0.35)',
+                  transition: 'all 0.25s ease',
                   '&:hover': {
-                    transform: 'translateY(-1px)',
-                    boxShadow: '0 6px 20px rgba(212, 175, 55, 0.45)',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 6px 20px rgba(56, 189, 248, 0.5)',
                   },
                 }}
               >
@@ -212,9 +240,11 @@ export default function Navbar() {
             sx: {
               width: { xs: '85%', sm: 360 },
               bgcolor: 'background.paper',
-              borderRadius: '0 24px 24px 0',
+              borderRadius: '0 28px 28px 0',
+              boxShadow: '10px 0 30px rgba(0, 0, 0, 0.15)',
             },
-        }}}
+          },
+        }}
       >
         <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', height: '100%' }}>
           {/* Mobile Drawer Header */}
@@ -223,32 +253,55 @@ export default function Navbar() {
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
-              mb: 4,
+              mb: 3,
               pb: 2,
               borderBottom: '1px solid',
               borderColor: 'divider',
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
               <Box
                 sx={{
-                  bgcolor: 'primary.main',
+                  background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
                   color: 'secondary.main',
-                  p: 0.75,
-                  borderRadius: 2,
+                  p: 0.85,
+                  borderRadius: 2.5,
                   display: 'flex',
                 }}
               >
                 <VisibilityIcon fontSize="small" />
               </Box>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: 'primary.main', fontSize: '1.1rem' }}>
+              <Typography variant="h6" sx={{ fontWeight: 900, fontSize: '1.15rem' }}>
                 NOOR OPTICAL
               </Typography>
             </Box>
-            <IconButton onClick={() => setMobileOpen(false)} sx={{ bgcolor: 'action.hover' }}>
+            <IconButton
+              onClick={() => setMobileOpen(false)}
+              sx={{
+                bgcolor: (theme) =>
+                  theme.palette.mode === 'light' ? 'grey.100' : 'grey.800',
+                borderRadius: 2,
+              }}
+            >
               <CloseIcon />
             </IconButton>
           </Stack>
+
+          {/* Quick Info Chip */}
+          <Box sx={{ mb: 3 }}>
+            <Chip
+              icon={<PhoneInTalkIcon sx={{ fontSize: '1rem !important' }} />}
+              label="+91 6238704448"
+              component="a"
+              href="tel:+916238704448"
+              clickable
+              color="secondary"
+              variant="outlined"
+              sx={{ width: '100%', justifyContent: 'flex-start', py: 2.2, px: 1, fontWeight: 700 }}
+            />
+          </Box>
+
+          <Divider sx={{ mb: 2 }} />
 
           {/* Navigation Links */}
           <List sx={{ px: 0, flexGrow: 1 }}>
@@ -260,27 +313,32 @@ export default function Navbar() {
                   onClick={() => setMobileOpen(false)}
                   sx={{
                     borderRadius: 3,
-                    py: 1.5,
-                    px: 2,
+                    py: 1.75,
+                    px: 2.25,
                     display: 'flex',
                     justifyContent: 'space-between',
+                    transition: 'all 0.2s ease',
                     '&:hover': {
-                      bgcolor: 'primary.main',
-                      color: 'common.white',
-                      '& .MuiListItemText-primary': { color: 'common.white' },
-                      '& .arrow-icon': { color: 'secondary.main' },
+                      bgcolor: 'secondary.main',
+                      color: '#0F172A',
+                      '& .MuiListItemText-primary': { color: '#0F172A', fontWeight: 800 },
+                      '& .arrow-icon': { color: '#0F172A', transform: 'translateX(4px)' },
                     },
                   }}
                 >
                   <ListItemText
                     primary={link.label}
                     sx={{
-                      fontWeight: 700,
-                      fontSize: '1rem',
-                      color: 'text.primary',
+                      '& .MuiListItemText-primary': {
+                        fontWeight: 700,
+                        fontSize: '1.05rem',
+                      },
                     }}
                   />
-                  <ArrowForwardIosIcon className="arrow-icon" sx={{ fontSize: 14, color: 'text.secondary' }} />
+                  <ArrowForwardIosIcon
+                    className="arrow-icon"
+                    sx={{ fontSize: 14, color: 'text.secondary', transition: 'transform 0.2s ease' }}
+                  />
                 </ListItemButton>
               </ListItem>
             ))}
@@ -293,11 +351,11 @@ export default function Navbar() {
               href="#location"
               fullWidth
               variant="contained"
-              color="primary"
+              color="secondary"
               size="large"
-              startIcon={<LocationOnIcon sx={{ color: 'secondary.main' }} />}
+              startIcon={<LocationOnIcon />}
               onClick={() => setMobileOpen(false)}
-              sx={{ py: 1.8, borderRadius: 3, fontWeight: 700 }}
+              sx={{ py: 1.8, borderRadius: 3, fontWeight: 800, color: '#0F172A' }}
             >
               Visit Showroom
             </Button>
